@@ -23,9 +23,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [BASE] = KEYMAP(  // layer 0 : default
                     // left hand
                   KC_ESC,             KC_1,         KC_2,          KC_3,    KC_4,    KC_5,   KC_LEFT,
-                  KC_TAB,             KC_QUOT,      KC_COMM,       KC_DOT,  KC_P,    KC_Y,   TG(SYMB),
+                  KC_TAB,             KC_QUOT,      KC_COMM,       KC_DOT,  KC_P,    KC_Y,   KC_LEAD,
                   KC_BSPC,            KC_A,         KC_O,          KC_E,    KC_U,    KC_I,
-                  KC_LSFT,            KC_SCLN,      KC_Q,          KC_J,    KC_K,    KC_X,   LT(MDIA, KC_NO),
+                  KC_LSFT,            KC_SCLN,      KC_Q,          KC_J,    KC_K,    KC_X,   LT(MDIA, KC_EQL),
                   LT(SYMB, KC_GRAVE), KC_QUOT,      LALT(KC_LSFT), KC_LEFT, KC_RGHT,
                   // left thumb cluster
                   ALT_T(KC_APP),  KC_LGUI,
@@ -58,7 +58,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                   KC_F7,  KC_F8,   KC_F9,   KC_F10,  KC_F11, KC_F12, KC_TRNS,
                   KC_TRNS, KC_UP,   KC_7,   KC_8,    KC_9,    KC_ASTR, KC_TRNS,
                   KC_DOWN, KC_4,   KC_5,    KC_6,    KC_MINS, KC_TRNS,
-                  KC_TRNS, KC_AMPR, KC_1,   KC_2,    KC_3,    KC_PLUS, MO(MDIA),
+                  KC_TRNS, LSFT(KC_SCLN), KC_1,   KC_2,    KC_3,    KC_PLUS, MO(MDIA),
                   KC_0,    KC_DOT, KC_SLSH, KC_EQL,  KC_TRNS,
                   KC_TRNS, KC_TRNS,
                   KC_TRNS,
@@ -143,9 +143,10 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
 void matrix_init_user(void) {
 };
 
+LEADER_EXTERNS();
+
 // Runs constantly in the background, in a loop.
 void matrix_scan_user(void) {
-
     uint8_t layer = biton32(layer_state);
 
     ergodox_board_led_off();
@@ -165,4 +166,25 @@ void matrix_scan_user(void) {
             break;
     }
 
-};
+    LEADER_DICTIONARY() {
+      leading = false;
+      leader_end();
+
+      SEQ_ONE_KEY(KC_D) {
+        ergodox_led_all_off();
+        wait_ms(100);
+        ergodox_right_led_3_on();
+        wait_ms(100);
+        ergodox_right_led_2_on();
+        wait_ms(100);
+        ergodox_right_led_1_on();
+        wait_ms(100);
+        ergodox_right_led_3_off();
+        wait_ms(100);
+        ergodox_right_led_2_off();
+        wait_ms(100);
+        ergodox_right_led_1_off();
+        
+      }
+    }
+    };
